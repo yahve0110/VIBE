@@ -3,6 +3,14 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Header } from "@/components/Header/Header";
 import Sidebar from "@/components/Sidebar/Sidebar";
+import { Inter } from 'next/font/google'
+
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+})
+ 
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.className}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
