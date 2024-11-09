@@ -8,6 +8,9 @@ const handle = app.getRequestHandler();
 const server = express();
 server.use(express.json());
 
+console.log('NODE ENV:', dev)
+console.log('NODE ENV:', process.env.NODE_ENV)
+
 app.prepare().then(() => {
   server.post('/api/predict', (req, res) => {
     const features = req.body.features;
