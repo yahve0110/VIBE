@@ -53,7 +53,6 @@ const jobOffers = [
       smile: 74,
     },
   },
-  // You can add more offers as needed
 ];
 
 export default function Home() {

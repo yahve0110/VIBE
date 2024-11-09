@@ -62,7 +62,7 @@ const Sidebar: React.FC = () => {
   const showFilters = pathname === "/";
 
   return (
-    <div className="text-black flex items-start p-6 rounded-xl text-lg flex-col mt-9 ml-7 h-auto w-[300px] bg-white absolute">
+    <div className="text-black flex items-start p-4 rounded-xl text-lg flex-col mt-7 ml-7 h-auto w-[300px] bg-white absolute">
       <div className="mb-8 flex flex-col text-2xl gap-2 shadow-md w-[300px] p-6 rounded-xl">
         <Link
           href="/"
@@ -80,7 +80,14 @@ const Sidebar: React.FC = () => {
         >
           Profile
         </Link>
-        
+        <Link
+          href="/rate"
+          className={`cursor-pointer ${
+            isActiveLink("/rate") ? "text-sky-400 font-bold" : ""
+          }`}
+        >
+          Rate your day
+        </Link>
       </div>
 
       {showFilters && (

@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import exampleImg from "@/imgs/example.jpg"
+import Image from "next/image";
 
 // Define the types for the server response
 interface ServerResponse {
@@ -9,6 +11,7 @@ interface ServerResponse {
     distance_to_centroid: number;
     average_distance_to_centroid: number;
     similarity: number;
+    image_path:string;
   };
 }
 
@@ -137,8 +140,14 @@ const Page = () => {
       )}
 
       {serverResponse && (
-        <div className="mt-6 text-black p-6 rounded-md text-center">
-          <h3 className="text-2xl mb-4">Prediction</h3>
+        <div className="mt-6 text-black p-6 rounded-md text-center flex justify-center flex-col items-center">
+          <h3 className="text-2xl mb-4">!!! This prediction sees only employeer !!!</h3>
+        
+
+          <p className="text-4xl ">
+            <strong>Similarity:</strong> {serverResponse.prediction.similarity}
+          </p>
+          <Image className="max-w-[50%] " src={serverResponse.prediction.image_path} alt="Example image" />
           <p>
             <strong>Predicted Cluster:</strong> {serverResponse.prediction.predicted_cluster}
           </p>
@@ -155,10 +164,6 @@ const Page = () => {
             {typeof serverResponse.prediction.average_distance_to_centroid === "number"
               ? serverResponse.prediction.average_distance_to_centroid.toFixed(4)
               : "N/A"}
-          </p>
-
-          <p>
-            <strong>Similarity:</strong> {serverResponse.prediction.similarity}
           </p>
         </div>
       )}
