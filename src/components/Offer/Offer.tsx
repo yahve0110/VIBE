@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Annoyed,
   BriefcaseBusiness,
@@ -7,34 +8,52 @@ import {
   Smile,
   TrendingUp,
 } from "lucide-react";
-import React from "react";
+import Link from "next/link";
 
-const Offer = () => {
+// Define the types for the props
+interface OfferProps {
+  jobTitle: string;
+  company: string;
+  jobType: string;
+  seniority: string;
+  remote: boolean;
+  percentages: {
+    frown: number;
+    annoyed: number;
+    smile: number;
+  };
+}
+
+const Offer: React.FC<OfferProps> = ({
+  jobTitle,
+  company,
+  jobType,
+  seniority,
+  remote,
+  percentages,
+}) => {
   return (
-    <div className="border-2 text-black  h-full p-5 rounded-md w-full">
+    <div className="border-2 text-black h-full p-5 rounded-md w-full">
       <div className="flex gap-8 items-start">
         <div className="p-4 flex justify-self-center items-start bg-gray-200 rounded-md">
           <Hotel className="text-black" />
         </div>
         <div className="flex flex-col mb-8">
-          <h3 className="text-2xl mb-2">Senior Frontend Developer</h3>
-          <p>TechCorp Inc.</p>
+          <h3 className="text-2xl mb-2">{jobTitle}</h3>
+          <p>{company}</p>
         </div>
       </div>
       <hr />
       <div className="flex justify-between p-4 items-center">
         <div className="flex justify-center gap-4 mt-2 text-gray-400">
           <div className="flex gap-2">
-            <MapPin /> Remote
+            <MapPin /> {remote ? "Remote" : "On-site"}
           </div>
           <div className="flex gap-2">
-            {" "}
-            <BriefcaseBusiness /> Full-time
+            <BriefcaseBusiness /> {jobType}
           </div>
-
           <div className="flex gap-2">
-            <TrendingUp />
-            Senior
+            <TrendingUp /> {seniority}
           </div>
         </div>
 
@@ -42,21 +61,21 @@ const Offer = () => {
           <div className="flex gap-4 items-center">
             <div className="flex flex-col items-center justify-center gap-1">
               <Frown className="w-7 h-7 text-red-700 mr-1" />
-              <p className="text-xs text-center">5%</p>
+              <p className="text-xs text-center">{percentages.frown}%</p>
             </div>
             <div className="flex flex-col items-center justify-center gap-1">
               <Annoyed className="w-7 h-7 text-yellow-500 mr-1" />
-              <p className="text-xs text-center">20%</p>
+              <p className="text-xs text-center">{percentages.annoyed}%</p>
             </div>
             <div className="flex flex-col items-center justify-center gap-1">
               <Smile className="w-7 h-7 text-green-600 mr-1" />
-              <p className="text-xs text-center">75%</p>
+              <p className="text-xs text-center">{percentages.smile}%</p>
             </div>
           </div>
 
-          <button className="bg-black cursor-pointer text-white p-2 rounded-md items-end">
+          <Link href={"/survey"} className="bg-black cursor-pointer text-white  p-2 rounded-md items-end">
             Apply now
-          </button>
+          </Link>
         </div>
       </div>
     </div>

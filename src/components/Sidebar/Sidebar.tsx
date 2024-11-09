@@ -80,14 +80,7 @@ const Sidebar: React.FC = () => {
         >
           Profile
         </Link>
-        <Link
-          href="/survey"
-          className={`cursor-pointer ${
-            isActiveLink("/survey") ? "text-sky-400 font-bold" : ""
-          }`}
-        >
-          Survey
-        </Link>
+        
       </div>
 
       {showFilters && (

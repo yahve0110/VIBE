@@ -1,62 +1,169 @@
-import React from "react";
+"use client";
 
-const page = () => {
+import React, { useState } from "react";
+
+// Define the types for the server response
+interface ServerResponse {
+  prediction: {
+    predicted_cluster: string;
+    distance_to_centroid: number;
+    average_distance_to_centroid: number;
+    similarity: number;
+  };
+}
+
+const questions = [
+  "I prefer to start my working day by planning my tasks",
+  "I am more comfortable learning from mentors than on my own",
+  "I have no problems asking for help when I need it",
+  "I easily get along with new people in a team",
+  "It is important for me to receive regular feedback from my colleagues",
+  "I value constructive criticism and willingly accept advice",
+  "I enjoy studying new topics independently",
+  "Working for a reputable company is important to me",
+  "It’s important for me that colleagues support each other",
+  "Work-life balance is a priority for me",
+];
+
+const Page = () => {
+  // State to store the user's responses, with the index as the key and score as the value
+  const [responses, setResponses] = useState<Record<number, number>>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [serverResponse, setServerResponse] = useState<ServerResponse | null>(null);
+
+  // Function to handle button click and set the response for each question
+  const handleButtonClick = (questionIndex: number, score: number) => {
+    setResponses((prevResponses) => ({
+      ...prevResponses,
+      [questionIndex]: score,
+    }));
+  };
+
+  // Handle form submission and make the API request
+  const handleSubmit = async () => {
+    if (Object.keys(responses).length < questions.length) {
+      setFeedback("Please answer all questions.");
+      return;
+    }
+
+    setLoading(true);
+    setFeedback(null);
+    setServerResponse(null);
+
+    const responseArray = Array.from(
+      { length: questions.length },
+      (_, i) => responses[i] || null
+    );
+
+    const payload = { features: responseArray };
+
+    try {
+      const response = await fetch("/api/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        const result: ServerResponse = await response.json();
+        setServerResponse(result);
+        setFeedback("Submission successful!");
+      } else {
+        setFeedback("Submission failed. Please try again.");
+      }
+    } catch (error) {
+      setFeedback("Request failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="mt-6 flex justify-center w-full px-16 overflow-y-auto max-h-[600px] text-semibold">
-      <div className=" p-6 justify-center text-black w-[80%] h-[600px]  grid grid-cols-5 grid-rows-6  gap-4">
-        <div className="row-span-4 shadow-xl p-6 rounded-md text-2xl">
-          <div className="text-white grid grid-cols-2 gap-4 mb-2">
-            <div className="flex flex-col gap-4">
-              <button className="bg-sky-500 p-2 rounded">1</button>
-              <button className="bg-sky-500 p-2 rounded">2</button>
-              <button className="bg-sky-500 p-2 rounded">3</button>
-            </div>
-            <div className="flex flex-col gap-4">
-              <button className="bg-sky-500 p-2 rounded">4</button>
-              <button className="bg-sky-500 p-2 rounded">5</button>
-            </div>
+      {!serverResponse && (
+        <div className="flex flex-col w-[75%]">
+          <div className="text-black flex flex-col mb-5 px-6">
+            <h2 className="text-2xl">
+              You'll need to answer several questions so we can match you with the
+              <span className="text-sky-500"> best team possible</span>.
+            </h2>
+            <p className="text-xl mt-4">
+              The numbers represent how you feel, where 5 is total agreement and 1 is total disagreement.
+            </p>
           </div>
-
-          <div>
-            I prefer to start my day by{" "}
-            <span className="text-semibold">planning</span> my tasks
+          <div className="flex flex-col gap-4">
+            {questions.map((question, index) => (
+              <div key={index} className="border p-8 rounded-xl w-full">
+                <p className="text-2xl text-black">{question}</p>
+                <div className="flex gap-4 mt-6">
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => handleButtonClick(index, num)}
+                      className={`w-12 h-12 rounded-md ${
+                        responses[index] === num ? "bg-green-500" : "bg-sky-500"
+                      }`}
+                    >
+                      {num}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
-          <div></div>
-        </div>
-        <div className="col-span-2 row-span-4 shadow-xl p-6 text-2xl">
-          <p className="text-bold">
-            You will need to answer several questions so we can match you with
-          </p>
-          <span className="text-sky-500"> best team possible</span>
-          <div className="mt-6">
-            The numbers will represent how you feel, where{" "}
-            <span className="text-sky-500">5</span> is total agreement and{" "}
-            <span className="text-sky-500">1</span> is total disagreement.
-          </div>
-        </div>
-        <div className="col-span-2 row-span-3 col-start-4 bg-red-500">3</div>
-        <div className="col-span-2 row-span-2 col-start-1 row-start-5 bg-gradient-to-r from-sky-500 to-blue-600 p-4 rounded-md text-white text-2xl ">
-          <p> I easily get along with new people in a team</p>
-          <div className="flex gap-4 text-black mt-2">
-            <button className="bg-white flex justify-center p-2 rounded">
-              1
+          <div className="flex justify-center">
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="mt-8 bg-sky-500 hover:bg-sky-700 w-[50%] text-white py-3 px-6 rounded-md text-lg"
+            >
+              {loading ? "Submitting..." : "Submit"}
             </button>
-            <button className="bg-white  p-2 rounded">2</button>
-            <button className="bg-white  p-2 rounded">3</button>
-            <button className="bg-white  p-2 rounded">4</button>
-            <button className="bg-white  p-2 rounded">5</button>
           </div>
+          {feedback && (
+            <p className="mt-4 text-center text-red-500">{feedback}</p>
+          )}
+
+          {loading && (
+            <div className="mt-4 text-center">
+              <p>Loading...</p>
+              <div className="spinner border-t-4 border-blue-500 rounded-full w-8 h-8 mt-2 animate-spin"></div>
+            </div>
+          )}
         </div>
-        <div className="row-span-2 col-start-3 row-start-5 shadow-xl p-4 text-2xl">
-          <div></div>
-          <p> I have no problem asking for help when I need it</p>
+      )}
+
+      {serverResponse && (
+        <div className="mt-6 text-black p-6 rounded-md text-center">
+          <h3 className="text-2xl mb-4">Prediction</h3>
+          <p>
+            <strong>Predicted Cluster:</strong> {serverResponse.prediction.predicted_cluster}
+          </p>
+
+          <p>
+            <strong>Distance to Centroid:</strong>
+            {typeof serverResponse.prediction.distance_to_centroid === "number"
+              ? serverResponse.prediction.distance_to_centroid.toFixed(4)
+              : "N/A"}
+          </p>
+
+          <p>
+            <strong>Average Distance to Centroid:</strong>
+            {typeof serverResponse.prediction.average_distance_to_centroid === "number"
+              ? serverResponse.prediction.average_distance_to_centroid.toFixed(4)
+              : "N/A"}
+          </p>
+
+          <p>
+            <strong>Similarity:</strong> {serverResponse.prediction.similarity}
+          </p>
         </div>
-        <div className="col-span-2 row-span-3 col-start-4 row-start-4 bg-red-500">
-          6
-        </div>
-      </div>
+      )}
     </div>
   );
 };
 
-export default page;
+export default Page;
