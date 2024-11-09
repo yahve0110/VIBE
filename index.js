@@ -20,7 +20,7 @@ app.prepare().then(() => {
     const featuresString = JSON.stringify(features);
   
     // Spawn the Python process
-    const pythonProcess = spawn('python', ['vibe.py']);
+    const pythonProcess = spawn('python', ['vibe3.py']);
   
     // Handle data from Python script
     let dataString = '';
