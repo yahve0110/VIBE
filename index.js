@@ -7,6 +7,7 @@ const handle = app.getRequestHandler();
 
 const server = express();
 server.use(express.json());
+server.use('/pictures', express.static('pictures'));
 
 console.log('NODE ENV:', dev)
 console.log('NODE ENV:', process.env.NODE_ENV)
@@ -36,6 +37,7 @@ app.prepare().then(() => {
     pythonProcess.stdout.on('end', () => {
       try {
         const prediction = JSON.parse(dataString);
+        console.log('response:', prediction)
         res.status(200).json({ prediction });
       } catch (error) {
         console.error('Error parsing JSON from Python script:', error);
