@@ -10,6 +10,9 @@ from scipy.spatial import ConvexHull
 import matplotlib.pyplot as plt
 import os
 import uuid
+import warnings
+from sklearn.exceptions import InconsistentVersionWarning
+warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 
 # Load the KMeans model
 with open("kmeans_model.pkl", "rb") as f:

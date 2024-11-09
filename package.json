@@ -5,15 +5,17 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "NODE_ENV=production node index.js",
+    "start": "NODE_ENV=production pm2 start index.js --name vibe --output ~/VIBE/logs/output.log --error ~/VIBE/logs/error.log",
     "lint": "next lint"
   },
   "dependencies": {
     "express": "^4.21.1",
     "lucide-react": "^0.456.0",
+    "morgan": "^1.10.0",
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "winston": "^3.16.0"
   },
   "devDependencies": {
     "@types/node": "^20",
