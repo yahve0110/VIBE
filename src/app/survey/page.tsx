@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import exampleImg from "@/imgs/example.jpg"
 import Image from "next/image";
 
 // Define the types for the server response
@@ -73,6 +72,9 @@ const Page = () => {
       if (response.ok) {
         const result: ServerResponse = await response.json();
         setServerResponse(result);
+        console.log("Image path:", result.prediction.image_path);
+        console.log(result)
+
         setFeedback("Submission successful!");
       } else {
         setFeedback("Submission failed. Please try again.");
@@ -147,7 +149,7 @@ const Page = () => {
           <p className="text-4xl ">
             <strong>Similarity:</strong> {serverResponse.prediction.similarity}
           </p>
-          <Image className="max-w-[50%] " src={serverResponse.prediction.image_path} alt="Example image" />
+          <img className="max-w-[50%]" src={serverResponse.prediction.image_path} alt="Example image" />
           <p>
             <strong>Predicted Cluster:</strong> {serverResponse.prediction.predicted_cluster}
           </p>
